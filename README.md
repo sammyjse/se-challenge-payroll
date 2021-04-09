@@ -125,6 +125,11 @@ We consider ourselves to be language agnostic here at Wave, so feel free to use 
 Please commit the following to this `README.md`:
 
 1. Instructions on how to build/run your application
+    - Install Python env depending on your OS
+    - Run pip install -r requirements.txt
+    - Go under payroll/app
+
+
 1. Answers to the following questions:
    - How did you test that your implementation was correct?
    - If this application was destined for a production environment, what would you add or change?
