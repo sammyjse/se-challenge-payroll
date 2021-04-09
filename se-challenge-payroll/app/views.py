@@ -2,8 +2,10 @@ import pandas as pd
 from django.db.models import Count, Sum, When, Case, Value, FloatField, IntegerField
 
 from django.http import JsonResponse
+from rest_framework import viewsets
 from rest_framework.views import APIView
 from .models import Reports, Timekeeping
+from .serializers import TimekeepingSerializer, ReportsSerializer
 import datetime
 from django.db.models.functions import TruncMonth, TruncYear
 
@@ -34,7 +36,7 @@ class UploadCSVView(APIView):
 
         # Checking the report id
         if Reports.objects.filter(report=report_id).count() == 1:
-            return JsonResponse("Report ID already exists.", status=200, safe=False)
+            return JsonResponse("Report ID already exists.", status=409, safe=False)
 
         # If the report is new it will be created in the db
         Reports.objects.create(report=report_id)
@@ -63,7 +65,7 @@ TimekeepingView
 """
 
 
-class TimekeepingView(APIView):
+class EmployeeReportsView(APIView):
     # array to keep track of the reports
     employeeReports = []
 
@@ -111,8 +113,8 @@ class TimekeepingView(APIView):
     """
     GET call to group by all employee ids, based off period (year, month). Then output the employeeReport.
     """
-    def get(self, request, format=None):
 
+    def get(self, request, format=None):
 
         """
         First period (0 - 15)
@@ -130,7 +132,6 @@ class TimekeepingView(APIView):
             .annotate(count=Count('employee_id'), period=Value(1, output_field=IntegerField())) \
             .filter(date__day__range=["01", "15"]) \
             .values('year', 'month', 'employee_id', 'count', 'amount', 'period')
-
 
         """
         Second period (16 - 31)
@@ -157,3 +158,20 @@ class TimekeepingView(APIView):
         self.formatRecords(total)
 
         return JsonResponse({"payrollReport": {"employeeReports": self.employeeReports}}, status=200, safe=False)
+
+
+"""
+
+Basic view setup for Timekeeping and Reports model. Run standard REST API's
+
+"""
+
+
+class TimekeepingView(viewsets.ModelViewSet):
+    queryset = Timekeeping.objects.all()
+    serializer_class = TimekeepingSerializer
+
+
+class ReportsView(viewsets.ModelViewSet):
+    queryset = Reports.objects.all()
+    serializer_class = ReportsSerializer

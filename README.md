@@ -127,14 +127,51 @@ Please commit the following to this `README.md`:
 1. Instructions on how to build/run your application
     - Install Python env depending on your OS
     - Run pip install -r requirements.txt
-    - Go under payroll/app
-
-
+    - Go under se-challenge-payroll, and run the following 
+        - python manage.py migrate (get all the db models)
+        - python manage.py runserver (run the local python server)
+        
+    - Visual of the DB
+        - If you want to view the tables/data after the API calls either install sqlite3
+        to your path. Or you can use an online browser like https://sqlitebrowser.org/ to 
+        view the tables (drag and drop db.sqlite3)
+    
+    - View DB through API calls (Postman for e.g)
+        - To view all timekeeping records (<domain>/api/timekeeping/)
+        - To view all reports uploaded (<domain>/api/reports/)
+        
+        
+    - Uploading CSV
+        - Under se-challenge-payroll/app copy over the csv file you want to upload
+            - 42 is already there
+            
+        - To upload the file (<domain>/upload/) 
+            - If the report id already exists a simple JsonResponse is outputted (409)
+            - If the report id doesn't exist it should be uploaded to the report db
+            
+    - Getting Employee reports
+        - To retrieve the employee reports (<domain>/employee-reports/)
+        
+    All endpoints can be viewed under urls.py
+   
 1. Answers to the following questions:
    - How did you test that your implementation was correct?
+        - For this challenge I tested manually through Postman just because of time constraint.
    - If this application was destined for a production environment, what would you add or change?
+        - There are many things I would change but below are some of the changes I would make:
+            - Create automated tests to run before deployment
+            - Seperate environments with .env files for prod local qa/stg. There are fields in 
+            settings.py that I would need to hide, and shouldn't be visible in prod.
+            - Change the db from sqlite to postgres, and serve it over a cloud service (AWS)
+            - Add custom exceptions that follow the same rules all throughout the project
+            - Setup up Docker, and CI/CD 
+            
    - What compromises did you have to make as a result of the time constraints of this challenge?
-
+        - Testing
+        - Moving the db to postgres/sql (not a huge time challenge, but wanted to focus on API's)
+        - I would do much more error checking, to make sure all cases are covered (for e.g invalid csvs)
+        
+        
 ## Submission Instructions
 
 1. Clone the repository.

@@ -1,25 +1,20 @@
-"""payroll URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.urls import path, include, re_path
 from django.contrib import admin
 from django.urls import path
-from app.views import UploadCSVView, TimekeepingView
+from app.views import UploadCSVView, TimekeepingView, EmployeeReportsView, ReportsView
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+
+# setting up the basic api for timekeeping and reports models
+router.register(r'timekeeping', TimekeepingView, 'timekeeping')
+router.register(r'reports', ReportsView, 'reports')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # API endpoints
     path('upload/', UploadCSVView.as_view(), name='upload'),
-    path('timekeeping/', TimekeepingView.as_view(), name='timekeeping')
+    path('employee-reports/', EmployeeReportsView.as_view(), name='employee-reports'),
+    path('api/', include(router.urls)),
 ]
